@@ -2,8 +2,8 @@ pushd %~dp0
 @echo off
 color 3f
 mode con lines=50 cols=100
-set JOYSEC=C:\\JOYSEC
-set script=C:\\JOYSEC\\script
+set JOYSEC=C:\JOYSEC
+set script=C:\JOYSEC\script
 FOR /F "tokens=1" %%a IN ('chdir') DO set chdir==%%a
 if not %chdir% == %JOYSEC% goto End-1
 FOR /F "tokens=1" %%a IN ('date /t') DO set day=%%a
