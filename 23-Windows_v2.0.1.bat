@@ -5,7 +5,7 @@ mode con lines=50 cols=100
 set JOYSEC=C:\JOYSEC
 set script=C:\JOYSEC\script
 FOR /F "tokens=1" %%a IN ('chdir') DO set chdir==%%a
-if not %chdir% == %JOYSEC% goto End-1
+if not %chdir% == C:\JOYSEC goto End-1
 FOR /F "tokens=1" %%a IN ('date /t') DO set day=%%a
 
 @echo off
@@ -35,7 +35,7 @@ EXIT
 :start
 
 @REM À©µµ¿ì ¹öÀü ½Äº°
-%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProductName" > WinVer.log
+C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProductName" > WinVer.log
 
 type WinVer.log | findstr "Windows server 2003" 	> nul
 IF NOT ERRORLEVEL 1 set WinVer=Win2003
@@ -58,7 +58,7 @@ IF NOT ERRORLEVEL 1 set WinVer=Win2022
 type WinVer.log | findstr "Windows server 2003"	> nul
 IF NOT ERRORLEVEL 1 goto windows2003
 
-del %JOYSEC%\WinVer.log	2>nul
+del C:\JOYSEC\WinVer.log	2>nul
 
 bcdedit > nul || (echo. & echo. & echo ¡Ø °ü¸®ÀÚ ±ÇÇÑÀ¸·Î ½ÇÇàÇØ ÁÖ¼¼¿ä!! & echo. & echo. & echo. & pause & exit)
 
@@ -66,8 +66,8 @@ bcdedit > nul || (echo. & echo. & echo ¡Ø °ü¸®ÀÚ ±ÇÇÑÀ¸·Î ½ÇÇàÇØ ÁÖ¼¼¿ä!! & echo
 
 :windows2003
 
-del %JOYSEC%\WinVer.log	2>nul
-::for /F "tokens=2 delims= " %%a in ('%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\CurrentVersion"') do (
+del C:\JOYSEC\WinVer.log	2>nul
+::for /F "tokens=2 delims= " %%a in ('C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\CurrentVersion"') do (
 ::	set WinBuild1=%%a
 ::)
 ::for /F "tokens=2 delims= " %%a in ('echo %WinBuild1%') do (
@@ -81,7 +81,7 @@ del %JOYSEC%\WinVer.log	2>nul
 
 
 @REM IIS ¹öÀü È®ÀÎ
-for /F "tokens=3 delims= " %%a in ('%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\InetStp\VersionString"') do (
+for /F "tokens=3 delims= " %%a in ('C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\InetStp\VersionString"') do (
 	set IISV=%%a
 )
 
@@ -107,8 +107,8 @@ ipconfig | find "IPv4"                                                          
 echo ##################################################################################### >> result.log
 wmic os get name | findstr Microsoft > OSVersion
 for /f "tokens=1 delims=|" %%a in ('type OSVersion') Do set OSVersion=%%a
-for /F "tokens=1-8" %%a in ('%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\BuildLab"') Do set BuildLab=%%c %%d %%e %%f %%g %%h
-for /F "tokens=1-8" %%a in ('%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\BuildLabEx"') Do set BuildLabEx=%%c %%d %%e %%f %%g %%h
+for /F "tokens=1-8" %%a in ('C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\BuildLab"') Do set BuildLab=%%c %%d %%e %%f %%g %%h
+for /F "tokens=1-8" %%a in ('C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\BuildLabEx"') Do set BuildLabEx=%%c %%d %%e %%f %%g %%h
 echo  OS Version     : %OSVersion%				                                           >> result.log
 echo  BuildLab     : %BuildLab%  %BuildLabEx%                                              >> result.log
 echo ##################################################################################### >> result.log
@@ -421,7 +421,7 @@ echo.                                                                           
 ::echo ¢Ñ ½Ã½ºÅÛ ³¯Â¥ Á¤º¸    			                       							>> %COMPUTERNAME%-1-3.log
 ::echo.                                                                                       >> %COMPUTERNAME%-1-3.log 
 ::echo %date% 																				>> %COMPUTERNAME%-1-3.log
-::for /f %%d in ('cscript //nologo %script%\OldDateCode.vbs') do set cu_date=%%d
+::for /f %%d in ('cscript //nologo C:\JOYSEC\script\OldDateCode.vbs') do set cu_date=%%d
 ::echo.                                                                                       >> %COMPUTERNAME%-1-3.log 
 ::echo ¢Ñ ¸¶Áö¸· ÆÐ½º¿öµå º¯°æÀÏ È®ÀÎ          	 												>> %COMPUTERNAME%-1-3.log
 ::echo.                                                                                       >> %COMPUTERNAME%-1-3.log 
@@ -675,10 +675,10 @@ echo [ °øÀ¯Æú´õ ÇöÈ² ]                                                          
 net share | find /V "IPC$" | findstr /I /v "¸í·ÉÀ» completed"                     		   >> %COMPUTERNAME%-2-3.log
 ::echo.                                                                                      >> %COMPUTERNAME%-2-3.log
 ::echo ¢Ñ OS Á¾·ù ÇöÈ²                                                                       >> %COMPUTERNAME%-2-3.log
-::%script%\psinfo | find "Product type"	  				                                   >> %COMPUTERNAME%-2-3.log
+::C:\JOYSEC\script\psinfo | find "Product type"	  				                                   >> %COMPUTERNAME%-2-3.log
 echo.                                                                                      >> %COMPUTERNAME%-2-3.log
 echo 1) AutoShareServer ·¹Áö½ºÆ®¸® ¼³Á¤°ª                                                  >> %COMPUTERNAME%-2-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters\AutoShareServer" >> %COMPUTERNAME%-2-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters\AutoShareServer" >> %COMPUTERNAME%-2-3.log
 IF ERRORLEVEL 1 ECHO AutoShareServer ·¹Áö½ºÆ®¸® °ªÀÌ µî·ÏµÇ¾î ÀÖÁö ¾Ê½À´Ï´Ù.(AutoShareServer »ý¼º ÇÊ¿ä)	   >> %COMPUTERNAME%-2-3.log
 echo.                                                                                      >> %COMPUTERNAME%-2-3.log
 echo 2) »ç¿ëÁßÀÎ °øÀ¯Æú´õ Á¢±Ù±ÇÇÑ ÇöÈ²                                                                 >> %COMPUTERNAME%-2-3.log
@@ -702,7 +702,7 @@ type folderper.log 																		   >> %COMPUTERNAME%-2-3.log
 ::IF NOT ERRORLEVEL 1 echo 2-3-2-bad  >> 2-2-result.log
 
 echo > 2-3-harddisk-reg.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters\AutoShareServer" >> 2-3-harddisk-reg.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver\parameters\AutoShareServer" >> 2-3-harddisk-reg.log
 ::echo.                                                                                      >> %COMPUTERNAME%-2-3.log
 echo > 2-3-harddisk-reg1.log
 TYPE 2-3-harddisk-reg.log | find /v "unable"                                      >> 2-3-harddisk-reg1.log
@@ -826,23 +826,23 @@ echo.                                                                           
 echo.                                                                                      >> %COMPUTERNAME%-3-1.log
 echo 2) Å¬¶ó¸®¾ðÆ® ¿¬°á ¾ÏÈ£È­ ¼öÁØ(2 ÀÌ»ó ¾çÈ£)												           >> %COMPUTERNAME%-3-1.log
 echo.                                                                                      >> %COMPUTERNAME%-3-1.log
-%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\MinEncryptionLevel"  >> %COMPUTERNAME%-3-1.log
-%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\MinEncryptionLevel"  >> 3-1-el.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\MinEncryptionLevel"  >> %COMPUTERNAME%-3-1.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\MinEncryptionLevel"  >> 3-1-el.log
 type 3-1-el.log | find /i "unable"
 echo.                                                                                      >> %COMPUTERNAME%-3-1.log
 IF NOT ERRORLEVEL 1 ECHO ¢Ñ Å¬¶óÀÌ¾ðÆ® ¿¬°á ¾ÏÈ£È­ ¼öÁØÀÌ ¼³Á¤µÇ¾î ÀÖÁö ¾Ê½À´Ï´Ù.             >> %COMPUTERNAME%-3-1.log
-%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\MinEncryptionLevel" | findstr "2 3 4" > NUL
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\MinEncryptionLevel" | findstr "2 3 4" > NUL
 IF ERRORLEVEL 1 set terminalbad=1
 echo.                                                                                      >> %COMPUTERNAME%-3-1.log
 echo 3) ³×Æ®¿öÅ© ¼öÁØ ÀÎÁõ »ç¿ë ¼³Á¤(1:»ç¿ë, 0:¹Ì»ç¿ë)										       >> %COMPUTERNAME%-3-1.log
 echo ¢Ñ ÆÐ½º¿öµå 90ÀÏ ¸¸·á ÀÌÈÄ »ç¿ëÀÚ°¡ Á÷Á¢ ÆÐ½º¿öµå º¯°æÀ» À§ÇØ ¹Ì»ç¿ë                              >> %COMPUTERNAME%-3-1.log
-::%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\UserAuthentication"  >> %COMPUTERNAME%-3-1.log
-::%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\UserAuthentication"  >> 3-1-terminaldrive.log
+::C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\UserAuthentication"  >> %COMPUTERNAME%-3-1.log
+::C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\UserAuthentication"  >> 3-1-terminaldrive.log
 ::type 3-1-terminaldrive.log | find /i "unable"
 ::echo.                                                                                      >> %COMPUTERNAME%-3-1.log
 ::IF NOT ERRORLEVEL 1 ECHO ¢Ñ ³×Æ®¿öÅ© ¼öÁØ ÀÎÁõ »ç¿ë ¼³Á¤ÀÌ µÇ¾î ÀÖÁö ¾Ê½À´Ï´Ù.              >> %COMPUTERNAME%-3-1.log
 echo.                                                                                      >> %COMPUTERNAME%-3-1.log
-::%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\UserAuthentication" | findstr "1" > NUL
+::C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\UserAuthentication" | findstr "1" > NUL
 ::IF ERRORLEVEL 1 GOTO 3-1-bad
 echo %terminalbad% | findstr "1" >nul
 IF ERRORLEVEL 1 goto 3-1-good
@@ -965,12 +965,12 @@ IF NOT ERRORLEVEL 1 GOTO DNS-ACTIVE
 :DNS-ACTIVE
 ECHO ¢Ñ DNS ¼­ºñ½º°¡ »ç¿ë ÁßÀÔ´Ï´Ù.                                                        >> %COMPUTERNAME%-4-2.log
 echo.                                                                                      >> %COMPUTERNAME%-4-2.log
-%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DNS Server\Zones" /s | findstr /I "windows" > nul
+C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DNS Server\Zones" /s | findstr /I "windows" > nul
 IF NOT ERRORLEVEL 1 goto 4-2-A
 IF ERRORLEVEL 1 goto 4-2-B
 
 :4-2-A
-%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DNS Server\Zones" /s > dnslist.log
+C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DNS Server\Zones" /s > dnslist.log
 type dnslist.log | findstr /I "windows SecureSecondaries"  >> %COMPUTERNAME%-4-2.log
 type dnslist.log | findstr /I "SecureSecondaries" | findstr /I "0x0" > nul
 IF NOT ERRORLEVEL 1 GOTO 4-2-bad
@@ -1053,14 +1053,14 @@ echo.                                                                           
 
 echo ************************  Community String(Ä¿¹Â´ÏÆ¼ ÀÌ¸§)  ************************** >> %COMPUTERNAME%-4-3.log
 echo.                                                                                      >> %COMPUTERNAME%-4-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\ValidCommunities" >> %COMPUTERNAME%-4-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\ValidCommunities" >> %COMPUTERNAME%-4-3.log
 echo.                                                                                      >> %COMPUTERNAME%-4-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\TrapConfiguration" >> %COMPUTERNAME%-4-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\TrapConfiguration" >> %COMPUTERNAME%-4-3.log
 echo.                                                                                      >> %COMPUTERNAME%-4-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\PermittedManagers" >> %COMPUTERNAME%-4-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\PermittedManagers" >> %COMPUTERNAME%-4-3.log
 echo.                                                                                      >> %COMPUTERNAME%-4-3.log
 echo.                                                                                      >> %COMPUTERNAME%-4-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\ValidCommunities" | find /v "ValidCommunities" | findstr [a-zA-Z] > 4-3-snmp.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\ValidCommunities" | find /v "ValidCommunities" | findstr [a-zA-Z] > 4-3-snmp.log
 for /f "tokens=2" %%a in ('type 4-3-snmp.log') DO echo %%a | findstr [a-zA-Z] > nul
 IF ERRORLEVEL 1 goto 4-3-good
 
@@ -1125,12 +1125,12 @@ echo ¡á ÇöÈ²                                                                    
 echo.                                                                                      >> %COMPUTERNAME%-5-1.log
 echo »ç¿ëÁßÀÎ OS´Â %WinVer% ÀÔ´Ï´Ù.                                                        >> %COMPUTERNAME%-5-1.log
 echo.                                                                                      >> %COMPUTERNAME%-5-1.log
-%script%\psinfo | find "pack"                                                              >> 5-1-sp.log
-%script%\psinfo | find "Kernel build number"                                               >> 5-2-sp.log
+C:\JOYSEC\script\psinfo | find "pack"                                                              >> 5-1-sp.log
+C:\JOYSEC\script\psinfo | find "Kernel build number"                                               >> 5-2-sp.log
 type 5-1-sp.log                           													>> %COMPUTERNAME%-5-1.log
 type 5-2-sp.log                           													>> %COMPUTERNAME%-5-1.log
-::%script%\psinfo | find "pack"                                                              >> %COMPUTERNAME%-5-1.log
-::%script%\psinfo | find "Kernel build number"                                               >> %COMPUTERNAME%-5-1.log
+::C:\JOYSEC\script\psinfo | find "pack"                                                              >> %COMPUTERNAME%-5-1.log
+::C:\JOYSEC\script\psinfo | find "Kernel build number"                                               >> %COMPUTERNAME%-5-1.log
 systeminfo | findstr /i "¹öÀü Version" | find /v "BIOS"									   >> %COMPUTERNAME%-5-1.log
 echo.                                                                                      >> %COMPUTERNAME%-5-1.log
 rem systeminfo | find /i "service pack"														   >> %COMPUTERNAME%-5-1.log
@@ -1219,7 +1219,7 @@ echo.                                                                           
 ::GOTO lang
 
 :::lang
-FOR /f %%i in ('cscript //nologo %script%\OldDateCode2.vbs') do echo %%i                   >> HotfixBaseday.log
+FOR /f %%i in ('cscript //nologo C:\JOYSEC\script\OldDateCode2.vbs') do echo %%i                   >> HotfixBaseday.log
 FOR /F "TOKENS=1,2,3 delims=/" %%i IN ('type HotfixBaseday.log') DO set cu_dateY=%%k
 FOR /F "TOKENS=1,2,3 delims=/" %%i IN ('type HotfixBaseday.log') DO set cu_dateM=%%i
 SET /a Start_Date=(%cu_dateY% * 12) + %cu_dateM% > nul
@@ -1372,22 +1372,22 @@ echo.                                                                           
 echo ¡á ÇöÈ²                                                                                >> %COMPUTERNAME%-6-2.log
 echo.                                                                                      >> %COMPUTERNAME%-6-2.log
 echo [ HKCU\Control Panel\Desktop ]                                                        >> %COMPUTERNAME%-6-2.log
-%script%\reg query "HKCU\Control Panel\Desktop\ScreenSaveActive"                           >> %COMPUTERNAME%-6-2.log
-%script%\reg query "HKCU\Control Panel\Desktop\ScreenSaverIsSecure"                        >> %COMPUTERNAME%-6-2.log
-%script%\reg query "HKCU\Control Panel\Desktop\ScreenSaveTimeOut"                          >> %COMPUTERNAME%-6-2.log
+C:\JOYSEC\script\reg query "HKCU\Control Panel\Desktop\ScreenSaveActive"                           >> %COMPUTERNAME%-6-2.log
+C:\JOYSEC\script\reg query "HKCU\Control Panel\Desktop\ScreenSaverIsSecure"                        >> %COMPUTERNAME%-6-2.log
+C:\JOYSEC\script\reg query "HKCU\Control Panel\Desktop\ScreenSaveTimeOut"                          >> %COMPUTERNAME%-6-2.log
 echo.                                                                                      >> %COMPUTERNAME%-6-2.log
 echo [ HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop ]                                                     >> %COMPUTERNAME%-6-2.log
-%script%\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveActive" 	   					>> %COMPUTERNAME%-6-2.log
-%script%\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaverIsSecure"                        >> %COMPUTERNAME%-6-2.log
-%script%\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveTimeOut"                          >> %COMPUTERNAME%-6-2.log
+C:\JOYSEC\script\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveActive" 	   					>> %COMPUTERNAME%-6-2.log
+C:\JOYSEC\script\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaverIsSecure"                        >> %COMPUTERNAME%-6-2.log
+C:\JOYSEC\script\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveTimeOut"                          >> %COMPUTERNAME%-6-2.log
 echo.                                                                                      >> %COMPUTERNAME%-6-2.log
 
 echo. > 6-2-GUI.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKCU\Control Panel\Desktop\ScreenSaveActive"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKCU\Control Panel\Desktop\ScreenSaveActive"') do set compare_val=%%a
 IF NOT %compare_val% EQU 1 ECHO bad		>> 6-2-GUI.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKCU\Control Panel\Desktop\ScreenSaverIsSecure"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKCU\Control Panel\Desktop\ScreenSaverIsSecure"') do set compare_val=%%a
 IF NOT %compare_val% EQU 1 ECHO bad		>> 6-2-GUI.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKCU\Control Panel\Desktop\ScreenSaveTimeOut"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKCU\Control Panel\Desktop\ScreenSaveTimeOut"') do set compare_val=%%a
 IF NOT %compare_val% LEQ 600 ECHO bad	>> 6-2-GUI.log
 
 type 6-2-GUI.log | find "bad" > nul
@@ -1396,11 +1396,11 @@ IF ERRORLEVEL 1 goto 6-2-good
 
 :6-2-GPO
 echo. > 6-2-REG.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveActive"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveActive"') do set compare_val=%%a
 IF NOT %compare_val% EQU 1 ECHO bad		>> 6-2-REG.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaverIsSecure"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaverIsSecure"') do set compare_val=%%a
 IF NOT %compare_val% EQU 1 ECHO bad		>> 6-2-REG.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveTimeOut"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop\ScreenSaveTimeOut"') do set compare_val=%%a
 IF NOT %compare_val% LEQ 600 ECHO bad	>> 6-2-REG.log
 
 type 6-2-REG.log | find "bad" > nul
@@ -1444,61 +1444,61 @@ echo.                                                                           
 echo ¡á ÇöÈ²                                                                                >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 echo ¢Ñ ÀÀ¿ë ÇÁ·Î±×·¥ ·Î±×Å©±â - 10485760(ÀÌ»ó)                                            >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Application\MaxSize"   >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Application\MaxSize"   >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 echo ¢Ñ º¸¾È ·Î±×Å©±â - 10485760(ÀÌ»ó)                                                     >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Security\MaxSize"      >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Security\MaxSize"      >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 echo ¢Ñ ½Ã½ºÅÛ ·Î±×Å©±â - 10485760(ÀÌ»ó)                                                   >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\System\MaxSize"        >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\System\MaxSize"        >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 
 echo [ HKLM\SYSTEM\CurrentControlSet\Services\Eventlog ]						>> %COMPUTERNAME%-6-3.log
 echo ¢Ñ ÀÀ¿ë ÇÁ·Î±×·¥ ·Î±× µ¤¾î¾²±â ¼³Á¤ ¿É¼Ç - 0(ÀÌº¥Æ® µ¤¾î¾²±â)                         >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Application\Retention" >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Application\Retention" >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 echo ¢Ñ º¸¾È ·Î±× µ¤¾î¾²±â ¼³Á¤ ¿É¼Ç - 0(ÀÌº¥Æ® µ¤¾î¾²±â)                                  >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Security\Retention"    >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Security\Retention"    >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 echo ¢Ñ ½Ã½ºÅÛ ·Î±× µ¤¾î¾²±â ¼³Á¤ ¿É¼Ç - 0(ÀÌº¥Æ® µ¤¾î¾²±â)                                >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\System\Retention"      >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\System\Retention"      >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 
 echo [ HKLM\SOFTWARE\Policies\Microsoft\Windows\EventLog ]		>> %COMPUTERNAME%-6-3.log
 echo ¢Ñ ÀÀ¿ë ÇÁ·Î±×·¥ ·Î±× µ¤¾î¾²±â ¼³Á¤ ¿É¼Ç - 0(ÀÌº¥Æ® µ¤¾î¾²±â)                         >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\Application\Retention" >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\Application\Retention" >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 echo ¢Ñ º¸¾È ·Î±× µ¤¾î¾²±â ¼³Á¤ ¿É¼Ç - 0(ÀÌº¥Æ® µ¤¾î¾²±â)                                  >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\Security\Retention"    >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\Security\Retention"    >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 echo ¢Ñ ½Ã½ºÅÛ ·Î±× µ¤¾î¾²±â ¼³Á¤ ¿É¼Ç - 0(ÀÌº¥Æ® µ¤¾î¾²±â)                                >> %COMPUTERNAME%-6-3.log
-%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\System\Retention"      >> %COMPUTERNAME%-6-3.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\System\Retention"      >> %COMPUTERNAME%-6-3.log
 echo.                                                                                      >> %COMPUTERNAME%-6-3.log
 
 
 
 echo. > 6-3-event.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Application\MaxSize"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Application\MaxSize"') do set compare_val=%%a
 IF NOT %compare_val% GEQ 10485760 echo false >> 6-3-event.log
 
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Security\MaxSize"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Security\MaxSize"') do set compare_val=%%a
 IF NOT %compare_val% GEQ 10485760 echo false >> 6-3-event.log
 
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\System\MaxSize"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\System\MaxSize"') do set compare_val=%%a
 IF NOT %compare_val% GEQ 10485760 echo false >> 6-3-event.log
 
 type 6-3-event.log | find "false" > nul
 IF NOT ERRORLEVEL 1 goto 6-3-bad
 
 echo. > 6-3-event-gui.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Application\Retention"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Application\Retention"') do set compare_val=%%a
 IF NOT %compare_val% EQU 0 echo false >> 6-3-event-gui.log 
 
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Security\Retention"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\Security\Retention"') do set compare_val=%%a
 IF NOT %compare_val% EQU 0 echo false >> 6-3-event-gui.log
 
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\System\Retention"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\Eventlog\System\Retention"') do set compare_val=%%a
 IF NOT %compare_val% EQU 0 echo false >> 6-3-event-gui.log
 
 type 6-3-event-gui.log | find "false" > nul
@@ -1507,13 +1507,13 @@ IF ERRORLEVEL 1 goto 6-3-good
 
 :6-3-gpo
 echo. > 6-3-event-gpo.log
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\Application\Retention"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\Application\Retention"') do set compare_val=%%a
 IF NOT %compare_val% EQU 0 echo false >> 6-3-event-gpo.log 
 
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\Security\Retention"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\Security\Retention"') do set compare_val=%%a
 IF NOT %compare_val% EQU 0 echo false >> 6-3-event-gpo.log
 
-for /f "tokens=3" %%a in ('%script%\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\System\Retention"') do set compare_val=%%a
+for /f "tokens=3" %%a in ('C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\Eventlog\System\Retention"') do set compare_val=%%a
 IF NOT %compare_val% EQU 0 echo false >> 6-3-event-gpo.log
 
 type 6-3-event-gpo.log | find "false" > nul
@@ -1568,34 +1568,34 @@ echo.                                                                           
 echo [·¹Áö½ºÆ®¸® À§Ä¡]                                                                     				>> %COMPUTERNAME%-6-4.log
 echo [HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system]                    				>> %COMPUTERNAME%-6-4.log
 echo ------------------------------------------------------------------------------------				>> %COMPUTERNAME%-6-4.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption"  >> %COMPUTERNAME%-6-4.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext"     >> %COMPUTERNAME%-6-4.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption"  >> %COMPUTERNAME%-6-4.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext"     >> %COMPUTERNAME%-6-4.log
 echo ------------------------------------------------------------------------------------				>> %COMPUTERNAME%-6-4.log
 echo.                                                                                      				>> %COMPUTERNAME%-6-4.log
 echo [·¹Áö½ºÆ®¸® À§Ä¡]                                                                     				>> %COMPUTERNAME%-6-4.log
 echo [HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon]                    					>> %COMPUTERNAME%-6-4.log
 echo ------------------------------------------------------------------------------------				>> %COMPUTERNAME%-6-4.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\LegalNoticeCaption"      >> %COMPUTERNAME%-6-4.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\LegalNoticeText"         >> %COMPUTERNAME%-6-4.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\LegalNoticeCaption"      >> %COMPUTERNAME%-6-4.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\LegalNoticeText"         >> %COMPUTERNAME%-6-4.log
 echo ------------------------------------------------------------------------------------				>> %COMPUTERNAME%-6-4.log
 echo.                                                                                      				>> %COMPUTERNAME%-6-4.log
 echo [°ü¸®µµ±¸ - ·ÎÄÃº¸¾ÈÁ¤Ã¥ - ·ÎÄÃÁ¤Ã¥ - º¸¾È¿É¼Ç]                                       				>> %COMPUTERNAME%-6-4.log
 echo ------------------------------------------------------------------------------------				>> %COMPUTERNAME%-6-4.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption"  > comtype-6-4.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption"  > comtype-6-4.log
 FOR /F "tokens=3" %%a IN ('type comtype-6-4.log') DO echo %%a											> comtype-6-4.log
 echo [´ëÈ­Çü ·Î±×¿Â : ·Î±×¿Â ½ÃµµÇÏ´Â »ç¿ëÀÚ¿¡ ´ëÇÑ ¸Þ¼¼Áö Á¦¸ñ] 										>> %COMPUTERNAME%-6-4.log
 type comtype-6-4.log																					>> %COMPUTERNAME%-6-4.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext"     > comtype-6-4.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticetext"     > comtype-6-4.log
 FOR /F "tokens=3" %%a IN ('type comtype-6-4.log') DO echo %%a											> comtype-6-4.log
 echo [´ëÈ­Çü ·Î±×¿Â : ·Î±×¿Â ½ÃµµÇÏ´Â »ç¿ëÀÚ¿¡ ´ëÇÑ ¸Þ¼¼Áö ÅØ½ºÆ®] 										>> %COMPUTERNAME%-6-4.log
 type comtype-6-4.log																					>> %COMPUTERNAME%-6-4.log
 echo ------------------------------------------------------------------------------------				>> %COMPUTERNAME%-6-4.log
 echo.                                                                                      				>> %COMPUTERNAME%-6-4.log
 echo.                                                                                      		    	>> %COMPUTERNAME%-6-4.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\LegalNoticeCaption"       > 6-4-logonmessage-1.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption"  >> 6-4-logonmessage-1.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\LegalNoticeText"          > 6-4-logonmessage.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\LegalNoticeText"     >> 6-4-logonmessage.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\LegalNoticeCaption"       > 6-4-logonmessage-1.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\legalnoticecaption"  >> 6-4-logonmessage-1.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\LegalNoticeText"          > 6-4-logonmessage.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system\LegalNoticeText"     >> 6-4-logonmessage.log
 findstr /I "ºÒ¹ý °æ°í Ã³¹ú warning authoriz law" 6-4-logonmessage-1.log > nul
 IF NOT ERRORLEVEL 1 goto 6-4-text
 IF ERRORLEVEL 1 goto 6-4-bad
@@ -1639,9 +1639,9 @@ echo ¡à ±âÁØ : ¡°¸¶Áö¸· ·Î±×¿Â »ç¿ëÀÚ ¼û±è ¼³Á¤¡±ÀÌ ¡°»ç¿ë¡±À¸·Î ¼³Á¤µÇ¾î ÀÖÀ» °
 echo.                                                                                        >> %COMPUTERNAME%-6-5.log
 echo ¡á ÇöÈ²                                                                                 >> %COMPUTERNAME%-6-5.log
 echo.                                                                                        >> %COMPUTERNAME%-6-5.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\DontDisplayLastUserName"   >> %COMPUTERNAME%-6-5.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\DontDisplayLastUserName"   >> %COMPUTERNAME%-6-5.log
 echo.                                                                                        >> %COMPUTERNAME%-6-5.log
-%script%\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\DontDisplayLastUserName"   >> 6-5-lastlogon.log
+C:\JOYSEC\script\reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\DontDisplayLastUserName"   >> 6-5-lastlogon.log
 echo.                                                                                        >> %COMPUTERNAME%-6-5.log
 
 type 6-5-lastlogon.log | find "1" > nul
@@ -1680,9 +1680,9 @@ echo ¡à ±âÁØ : '·Î±×¿ÂÇÏÁö ¾Ê°í ½Ã½ºÅÛ Á¾·á Çã¿ë'ÀÌ '»ç¿ë¾ÈÇÔ'À¸·Î ¼³Á¤µÇ¾î ÀÖÀ»
 echo.                                                                                      >> %COMPUTERNAME%-6-6.log
 echo ¡á ÇöÈ²                                                                                >> %COMPUTERNAME%-6-6.log
 echo.                                                                                      >> %COMPUTERNAME%-6-6.log
-%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\ShutdownWithoutLogon" >> %COMPUTERNAME%-6-6.log
+C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\ShutdownWithoutLogon" >> %COMPUTERNAME%-6-6.log
 echo.                                                                                      >> %COMPUTERNAME%-6-6.log
-%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\ShutdownWithoutLogon" | find /v "ShutdownWithoutLogon	0" > nul
+C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\ShutdownWithoutLogon" | find /v "ShutdownWithoutLogon	0" > nul
 IF ERRORLEVEL 1 goto 6-6-good
 IF NOT ERRORLEVEL 1 goto 6-6-bad
 
@@ -1732,8 +1732,8 @@ echo ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤
 echo.                                                                                       >> %COMPUTERNAME%-6-7.log
 echo ¡á ÇöÈ²                                                                                 >> %COMPUTERNAME%-6-7.log
 echo.                                                                                       >> %COMPUTERNAME%-6-7.log
-%script%\auditpol                                                                           >> %COMPUTERNAME%-6-7.log
-%script%\auditpol                                                                           > 6-7-securitylog.log
+C:\JOYSEC\script\auditpol                                                                           >> %COMPUTERNAME%-6-7.log
+C:\JOYSEC\script\auditpol                                                                           > 6-7-securitylog.log
 type 6-7-securitylog.log | find "Logon"                                            > 6-7-auditpol.log
 ::type 6-7-securitylog.log | find "Object Access"                                   >> 6-7-auditpol.log
 type 6-7-securitylog.log | find "Account Logon"                                   >> 6-7-auditpol.log
@@ -1784,9 +1784,9 @@ echo ¡à ±âÁØ : '½Ã½ºÅÛÀÌ Á¾·áÇÒ ¶§ °¡»ó ¸Þ¸ð¸® ÆäÀÌÁö ÆÄÀÏ Áö¿ò' Ç×¸ñÀÌ '»ç¿ë'À¸
 echo.                                                                                      >> %COMPUTERNAME%-6-8.log
 echo ¡á ÇöÈ²                                                                                >> %COMPUTERNAME%-6-8.log
 echo.                                                                                      >> %COMPUTERNAME%-6-8.log
-%script%\reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\ClearPageFileAtShutdown"   >> %COMPUTERNAME%-6-8.log
+C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\ClearPageFileAtShutdown"   >> %COMPUTERNAME%-6-8.log
 echo.                                                                                      >> %COMPUTERNAME%-6-8.log
-%script%\reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\ClearPageFileAtShutdown" | find /I "1" > nul
+C:\JOYSEC\script\reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\ClearPageFileAtShutdown" | find /I "1" > nul
 IF NOT ERRORLEVEL 1 goto 6-8-good
 IF ERRORLEVEL 1 goto 6-8-bad
 
@@ -1822,9 +1822,9 @@ echo ¡à ±âÁØ : '»ç¿ëÀÚ°¡ ÇÁ¸°ÅÍ µå¶óÀÌ¹ö¸¦ ¼³Ä¡ ÇÒ ¼ö ¾ø°Ô ÇÔ' Ç×¸ñÀÌ '»ç¿ë'À¸·Î
 echo.                                                                                      >> %COMPUTERNAME%-6-9.log
 echo ¡á ÇöÈ²                                                                                >> %COMPUTERNAME%-6-9.log
 echo.                                                                                      >> %COMPUTERNAME%-6-9.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers\AddPrinterDrivers"   	>> %COMPUTERNAME%-6-9.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers\AddPrinterDrivers"   	>> %COMPUTERNAME%-6-9.log
 echo.                                                                                      						>> %COMPUTERNAME%-6-9.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers\AddPrinterDrivers" | find /I "1" > nul
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers\AddPrinterDrivers" | find /I "1" > nul
 IF NOT ERRORLEVEL 1 goto 6-9-good
 IF ERRORLEVEL 1 goto 6-9-bad
 
@@ -1918,7 +1918,7 @@ echo ¡à ±âÁØ : »ó¿ë ¹é½Å ÇÁ·Î±×·¥ÀÌ ¼³Ä¡µÇ¾î ÀÖ°Å³ª ÃÖ½Å ¿£Áø ¾÷µ¥ÀÌÆ®°¡ ¼³Ä¡µÇ¾
 echo.                                                                                      >> %COMPUTERNAME%-7-2.log
 echo ¡á ÇöÈ²                                                                                >> %COMPUTERNAME%-7-2.log
 echo.                                                                                      >> %COMPUTERNAME%-7-2.log 
-for /f %%i in ('cscript //nologo %script%\OldDateCode3.vbs') do set cu_date=%%i
+for /f %%i in ('cscript //nologo C:\JOYSEC\script\OldDateCode3.vbs') do set cu_date=%%i
 
 ::net start | find /i "Symantec Endpoint Protection WSC Service" > nul
 ::net start | find /I "Symantec Endpoint Protection"                                  >> %COMPUTERNAME%-7-2.log 
@@ -2062,9 +2062,9 @@ echo ¡à ±âÁØ : ÇØ´ç ·¹Áö½ºÆ®¸®ÀÇ "RestrictAnonymous"°ªÀÌ 2·Î ¼³Á¤µÇ¾î ÀÖÀ¸¸é ¾çÈ
 echo.                                                                                      >> %COMPUTERNAME%-8-2.log
 echo ¡á ÇöÈ²                                                                               >> %COMPUTERNAME%-8-2.log
 echo.                                                                                      >> %COMPUTERNAME%-8-2.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Control\LSA\restrictanonymous"           >> %COMPUTERNAME%-8-2.log
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Control\LSA\restrictanonymous"           >> %COMPUTERNAME%-8-2.log
 echo.                                                                                      >> %COMPUTERNAME%-8-2.log
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Control\LSA\restrictanonymous" | find /I "2" > nul
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Control\LSA\restrictanonymous" | find /I "2" > nul
 IF NOT ERRORLEVEL 1 goto 8-2-good
 IF ERRORLEVEL 1 goto 8-2-bad
 
@@ -2149,20 +2149,20 @@ echo ¡á ÇöÈ²                                                                    
 
 echo.                                                                                      >> %COMPUTERNAME%-8-4.log
 echo ¢Ñ AutoAdminLogon                                                                     >> %COMPUTERNAME%-8-4.log
-::%script%\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoAdminLogon" | find /I "AutoAdminLogon" >> %COMPUTERNAME%-8-4.log
-%script%\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoAdminLogon" | find /I "AutoAdminLogon" >> %COMPUTERNAME%-8-4.log
+::C:\JOYSEC\script\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoAdminLogon" | find /I "AutoAdminLogon" >> %COMPUTERNAME%-8-4.log
+C:\JOYSEC\script\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoAdminLogon" | find /I "AutoAdminLogon" >> %COMPUTERNAME%-8-4.log
 
 ::echo.                                                                                      >> %COMPUTERNAME%-8-4.log
 ::echo ¢Ñ DefaultUserName                                                                     >> %COMPUTERNAME%-8-4.log
-::%script%\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "DefaultUserName" | find /I "DefaultUserName" >> %COMPUTERNAME%-8-4.log
+::C:\JOYSEC\script\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "DefaultUserName" | find /I "DefaultUserName" >> %COMPUTERNAME%-8-4.log
 ::reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "DefaultUserName" | find /I "DefaultUserName" >> %COMPUTERNAME%-8-4.log
 
 echo.                                                                                      >> %COMPUTERNAME%-8-4.log
 echo ¢Ñ DefaultPassword                                                                     >> %COMPUTERNAME%-8-4.log
-%script%\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "DefaultPassword" | find /I "DefaultPassword"  >> %COMPUTERNAME%-8-4.log
+C:\JOYSEC\script\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "DefaultPassword" | find /I "DefaultPassword"  >> %COMPUTERNAME%-8-4.log
 
 echo.                                                                                      >> %COMPUTERNAME%-8-4.log
-%script%\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoAdminLogon" | find /I "AutoAdminLogon" | find "1" > nul
+C:\JOYSEC\script\reg query "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoAdminLogon" | find /I "AutoAdminLogon" | find "1" > nul
 IF ERRORLEVEL 1 goto 8-4-good
 IF NOT ERRORLEVEL 1 goto 8-4-bad
 
@@ -2210,7 +2210,7 @@ IF NOT ERRORLEVEL 1 GOTO IIS
 :IIS
 
 :: IIS Version ±¸ÇÏ±â
-%script%\reg query "HKLM\SYSTEM\CurrentControlSet\Services\W3SVC\Parameters" | find /i "version" > iis-version.txt
+C:\JOYSEC\script\reg query "HKLM\SYSTEM\CurrentControlSet\Services\W3SVC\Parameters" | find /i "version" > iis-version.txt
 type iis-version.txt | find /i "major"                                                        > iis-version-major.txt
 for /f "tokens=3" %%a in (iis-version-major.txt) do set iis_ver_major=%%a
 del iis-version-major.txt 2> nul
@@ -2223,7 +2223,7 @@ if %iis_ver_major% geq 7 (
 )
 :: iis ver <= 6
 if %iis_ver_major% leq 6 (
-	cscript %script%\adsutil.vbs enum W3SVC | find /i "W3SVC" | findstr /i /v "FILTERS APPPOOLS INFO" > website-list.txt
+	cscript C:\JOYSEC\script\adsutil.vbs enum W3SVC | find /i "W3SVC" | findstr /i /v "FILTERS APPPOOLS INFO" > website-list.txt
 )
 
 :: WebSite Name ±¸ÇÏ±â ( website-name.txt )
@@ -2238,8 +2238,8 @@ if %iis_ver_major% geq 7 (
 :: iis ver <= 6
 if %iis_ver_major% leq 6 (
 	for /f "tokens=1 delims=[]" %%i in (website-list.txt) do (
-		cscript %script%\adsutil.vbs enum %%i | findstr /i "ServerComment ServerAutoStart"       >> website-name.txt
-		cscript %script%\adsutil.vbs enum %%i/ROOT | find "AppRoot"                              >> website-name.txt
+		cscript C:\JOYSEC\script\adsutil.vbs enum %%i | findstr /i "ServerComment ServerAutoStart"       >> website-name.txt
+		cscript C:\JOYSEC\script\adsutil.vbs enum %%i/ROOT | find "AppRoot"                              >> website-name.txt
 		echo -----------------------------------------------------------------------			 >> website-name.txt
 	)
 )
@@ -2256,7 +2256,7 @@ if %iis_ver_major% geq 7 (
 :: iis ver <= 6
 if %iis_ver_major% leq 6 (
 	for /f "tokens=1 delims=[]" %%i in (website-list.txt) do (
-		cscript %script%\adsutil.vbs enum %%i/root | find /i "path" | find /i /v "AspEnableParentPaths" >> website-physicalpath-temp.txt
+		cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | find /i "path" | find /i /v "AspEnableParentPaths" >> website-physicalpath-temp.txt
 	)
 	for /f "tokens=4-8 delims= " %%i in (website-physicalpath-temp.txt) do (
 		echo %%i %%j %%k %%l %%m                                                              >> website-physicalpath.txt
@@ -2356,8 +2356,8 @@ if %iis_ver_major% geq 7 (
 )
 :: iis ver <= 6
 if %iis_ver_major% leq 6 (
-	cscript %script%\adsutil.vbs get W3SVC/EnableDirBrowsing  | find /i /v "Microsoft"      >> %COMPUTERNAME%-w.log
-	cscript %script%\adsutil.vbs get W3SVC/EnableDirBrowsing  | find /i /v "Microsoft"      > iis-result.txt
+	cscript C:\JOYSEC\script\adsutil.vbs get W3SVC/EnableDirBrowsing  | find /i /v "Microsoft"      >> %COMPUTERNAME%-w.log
+	cscript C:\JOYSEC\script\adsutil.vbs get W3SVC/EnableDirBrowsing  | find /i /v "Microsoft"      > iis-result.txt
 	)
 echo.                                                                                        >> %COMPUTERNAME%-w.log
 
@@ -2379,10 +2379,10 @@ if %iis_ver_major% leq 6 (
 	for /f "tokens=1 delims=[]" %%i in (website-list.txt) do (
 		echo [WebSite AppRoot] %%i                                                           >> %COMPUTERNAME%-w.log
 		echo -----------------------------------------------------                           >> %COMPUTERNAME%-w.log
-		cscript %script%\adsutil.vbs enum %%i/root | find /i "EnableDirBrowsing" > nul
+		cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | find /i "EnableDirBrowsing" > nul
 		if not errorlevel 1 (
-			cscript %script%\adsutil.vbs enum %%i/root | find /i "EnableDirBrowsing"         >> %COMPUTERNAME%-w.log
-			cscript %script%\adsutil.vbs enum %%i/root | find /i "EnableDirBrowsing"         >> iis-result.txt
+			cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | find /i "EnableDirBrowsing"         >> %COMPUTERNAME%-w.log
+			cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | find /i "EnableDirBrowsing"         >> iis-result.txt
 			echo.                                                                            >> %COMPUTERNAME%-w.log
 		) else (
 			echo * ±âº» ¼³Á¤ÀÌ Àû¿ëµÇ¾î ÀÖÀ½.                                                >> %COMPUTERNAME%-w.log
@@ -2527,8 +2527,8 @@ if %iis_ver_major% geq 7 (
 )
 :: iis ver <= 6
 if %iis_ver_major% leq 6 (
-	cscript %script%\adsutil.vbs get W3SVC/AspEnableParentPaths  | find /i /v "Microsoft"    >> %COMPUTERNAME%-w.log
-	cscript %script%\adsutil.vbs get W3SVC/AspEnableParentPaths  | find /i /v "Microsoft"    > iis-result.txt
+	cscript C:\JOYSEC\script\adsutil.vbs get W3SVC/AspEnableParentPaths  | find /i /v "Microsoft"    >> %COMPUTERNAME%-w.log
+	cscript C:\JOYSEC\script\adsutil.vbs get W3SVC/AspEnableParentPaths  | find /i /v "Microsoft"    > iis-result.txt
 )
 echo.                                                                                        >> %COMPUTERNAME%-w.log
 
@@ -2556,10 +2556,10 @@ if %iis_ver_major% leq 6 (
 	for /f "tokens=1 delims=[]" %%i in (website-list.txt) do (
 		echo [WebSite AppRoot] %%i                                                          >> %COMPUTERNAME%-w.log
 		echo -----------------------------------------------------                          >> %COMPUTERNAME%-w.log
-		cscript %script%\adsutil.vbs enum %%i/root | find /i "AspEnableParentPaths" > nul
+		cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | find /i "AspEnableParentPaths" > nul
 		if not errorlevel 1 (
-			cscript %script%\adsutil.vbs enum %%i/root | find /i "AspEnableParentPaths"     >> %COMPUTERNAME%-w.log
-			cscript %script%\adsutil.vbs enum %%i/root | find /i "AspEnableParentPaths"     >> iis-result.txt
+			cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | find /i "AspEnableParentPaths"     >> %COMPUTERNAME%-w.log
+			cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | find /i "AspEnableParentPaths"     >> iis-result.txt
 			echo.                                                                           >> %COMPUTERNAME%-w.log
 		) else (
 			echo AspEnableParentPaths : * ±âº» ¼³Á¤ÀÌ Àû¿ëµÇ¾î ÀÖÀ½.                         >> %COMPUTERNAME%-w.log
@@ -2609,10 +2609,10 @@ echo ¡à ±âÁØ : À¥ ÇÁ·Î¼¼½º°¡ À¥ ¼­ºñ½º ¿î¿µ¿¡ ÇÊ¿äÇÑ ÃÖ¼ÒÇÑ ±ÇÇÑÀ¸·Î ¼³Á¤µÇ¾î ÀÖ
 echo.	>> %COMPUTERNAME%-w.log
 
 echo [IISADMIN] > temp.txt
-%script%\reg query HKLM\SYSTEM\ControlSet001\services\IISADMIN\ObjectName >> temp.txt
+C:\JOYSEC\script\reg query HKLM\SYSTEM\ControlSet001\services\IISADMIN\ObjectName >> temp.txt
 echo. >> temp.txt
 echo [World Wide Web Publishing] >> temp.txt
-%script%\reg query HKLM\SYSTEM\ControlSet001\services\W3SVC\ObjectName >> temp.txt
+C:\JOYSEC\script\reg query HKLM\SYSTEM\ControlSet001\services\W3SVC\ObjectName >> temp.txt
 type temp.txt | findstr /i "LocalSystem" > nul
 IF NOT ERRORLEVEL 1 echo ¢Ñ °á°ú : LocalSystem(±âº»°èÁ¤)À¸·Î ÀÛµ¿ÇÏ°í ÀÖÀ½	>> %COMPUTERNAME%-w.log
 IF ERRORLEVEL 1 echo ¢Ñ °á°ú : IIS¿ë °èÁ¤À» ÀÌ¿ëÇÏ¿© ÀÛµ¿ÇÏ°í ÀÖÀ½	>> %COMPUTERNAME%-w.log
@@ -2718,7 +2718,7 @@ if %iis_ver_major% geq 7 (
 )
 :: iis ver <= 6
 if %iis_ver_major% leq 6 (
-	cscript %script%\adsutil.vbs enum W3SVC | findstr /i "AspMaxRequestEntityAllowed AspBufferingLimit" >> %COMPUTERNAME%-w.log
+	cscript C:\JOYSEC\script\adsutil.vbs enum W3SVC | findstr /i "AspMaxRequestEntityAllowed AspBufferingLimit" >> %COMPUTERNAME%-w.log
 )
 echo * °ªÀÌ ¾øÀ» °æ¿ì ±âº» ¼³Á¤ÀÌ Àû¿ëµÇ¾î ÀÖÀ½.                                             >> %COMPUTERNAME%-w.log
 echo.                                                                                        >> %COMPUTERNAME%-w.log
@@ -2741,15 +2741,15 @@ if %iis_ver_major% leq 6 (
 	for /f "tokens=1 delims=[]" %%i in (website-list.txt) do (
 		echo [WebSite AppRoot] %%i                                                           >> %COMPUTERNAME%-w.log
 		echo -----------------------------------------------------                           >> %COMPUTERNAME%-w.log
-		cscript %script%\adsutil.vbs enum %%i | find /i "AspMaxRequestEntityAllowed" > nul
+		cscript C:\JOYSEC\script\adsutil.vbs enum %%i | find /i "AspMaxRequestEntityAllowed" > nul
 		if not errorlevel 1 (
-			cscript %script%\adsutil.vbs enum %%i | find /i "AspMaxRequestEntityAllowed"  >> %COMPUTERNAME%-w.log
+			cscript C:\JOYSEC\script\adsutil.vbs enum %%i | find /i "AspMaxRequestEntityAllowed"  >> %COMPUTERNAME%-w.log
 		) else (
 			echo AspMaxRequestEntityAllowed : * ±âº» ¼³Á¤ÀÌ Àû¿ëµÇ¾î ÀÖÀ½.                  >> %COMPUTERNAME%-w.log
 		)
-		cscript %script%\adsutil.vbs enum %%i | find /i "AspBufferingLimit" > nul
+		cscript C:\JOYSEC\script\adsutil.vbs enum %%i | find /i "AspBufferingLimit" > nul
 		if not errorlevel 1 (
-			cscript %script%\adsutil.vbs enum %%i | find /i "AspBufferingLimit"           >> %COMPUTERNAME%-w.log
+			cscript C:\JOYSEC\script\adsutil.vbs enum %%i | find /i "AspBufferingLimit"           >> %COMPUTERNAME%-w.log
 			echo.                                                                            >> %COMPUTERNAME%-w.log
 		) else (
 			echo AspBufferingLimit          : * ±âº» ¼³Á¤ÀÌ Àû¿ëµÇ¾î ÀÖÀ½.                  >> %COMPUTERNAME%-w.log
@@ -3026,7 +3026,7 @@ echo. > script.txt
 echo. > flag.txt
 echo. > id.txt
 
-%script%\adsutil.vbs enum W3SVC | findstr "\.htr \.idc \.stm \.shtm \.shtml \.printer \.htw \.ida \.idq" > nul
+C:\JOYSEC\script\adsutil.vbs enum W3SVC | findstr "\.htr \.idc \.stm \.shtm \.shtml \.printer \.htw \.ida \.idq" > nul
 IF NOT ERRORLEVEL 1 echo false >> flag.txt
 
 ::for /F "tokens=1 delims=) skip=1" %%i in (hname.txt) DO (
@@ -3055,10 +3055,10 @@ IF ERRORLEVEL 1 (
 	echo ¢Ñ °á°ú : Ãë¾àÇÑ ¸ÅÇÎÀÌ Á¸ÀçÇÏ°í ÀÖÀ½	>> %COMPUTERNAME%-w.log
 	echo.	>> %COMPUTERNAME%-w.log
 	echo Ãë¾à ¸®½ºÆ®	>> %COMPUTERNAME%-w.log
-	cscript %script%\adsutil.vbs enum W3SVC | findstr "\.htr \.idc \.stm \.shtm \.shtml \.printer \.htw \.ida \.idq" > nul
+	cscript C:\JOYSEC\script\adsutil.vbs enum W3SVC | findstr "\.htr \.idc \.stm \.shtm \.shtml \.printer \.htw \.ida \.idq" > nul
 	IF NOT ERRORLEVEL 1 (
 		echo [±âº» ¼³Á¤] >> %COMPUTERNAME%-w.log
-		cscript %script%\adsutil.vbs enum W3SVC | findstr "\.htr \.idc \.stm \.shtm \.shtml \.printer \.htw \.ida \.idq" >> %COMPUTERNAME%-w.log
+		cscript C:\JOYSEC\script\adsutil.vbs enum W3SVC | findstr "\.htr \.idc \.stm \.shtm \.shtml \.printer \.htw \.ida \.idq" >> %COMPUTERNAME%-w.log
 	)
 	type id.txt | findstr "0 1 2 3 4 5 6 7 8 9 0 a b c d e f g h i j k l m n o" > nul
 	IF NOT ERRORLEVEL 1 (
@@ -3296,7 +3296,7 @@ IF ERRORLEVEL 1 (
 ::echo. [IIS ¹è³Ê È®ÀÎ]                                                                      >> %COMPUTERNAME%-w.log
 ::IF NOT ERRORLEVEL 1 (
 ::	echo ---------------------------------HTTP Banner-------------------------------------       >> %COMPUTERNAME%-w.log
-::	cscript %script%\http_banner.vbs > http_banner.txt
+::	cscript C:\JOYSEC\script\http_banner.vbs > http_banner.txt
 ::	type http_banner.txt								>> %COMPUTERNAME%-w.log 2>nul
 ::	echo ---------------------------------------------------------------------------------       >> %COMPUTERNAME%-w.log
 ::	del http_banner.txt 2>nul
@@ -3327,7 +3327,7 @@ if %iis_ver_major% geq 7 (
 
 :: iis ver <= 6
 if %iis_ver_major% leq 6 (
-cscript %script%\adsutil.vbs enum W3SVC | findstr "400, 401, 403, 404, 500,"                 >> %COMPUTERNAME%-w.log
+cscript C:\JOYSEC\script\adsutil.vbs enum W3SVC | findstr "400, 401, 403, 404, 500,"                 >> %COMPUTERNAME%-w.log
 )
 echo.                                                                                        >> %COMPUTERNAME%-w.log
 echo.                                                                                        >> %COMPUTERNAME%-w.log
@@ -3351,9 +3351,9 @@ if %iis_ver_major% leq 6 (
 	FOR /F "tokens=1 delims=[]" %%i in (website-list.txt) do (
 		echo [WebSite AppRoot] %%i                                                                 >> %COMPUTERNAME%-w.log
 		echo -----------------------------------------------------------------------               >> %COMPUTERNAME%-w.log
-		cscript %script%\adsutil.vbs enum %%i/root | findstr "400, 401, 403, 404, 500," > nul
+		cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | findstr "400, 401, 403, 404, 500," > nul
 		IF NOT ERRORLEVEL 1 (
-			cscript %script%\adsutil.vbs enum %%i/root | findstr "400, 401, 403, 404, 500,"          >> %COMPUTERNAME%-w.log
+			cscript C:\JOYSEC\script\adsutil.vbs enum %%i/root | findstr "400, 401, 403, 404, 500,"          >> %COMPUTERNAME%-w.log
 			echo.                                                                                    >> %COMPUTERNAME%-w.log
 		) ELSE (
 			echo ±âº» ¼³Á¤ÀÌ Àû¿ëµÇ¾î ÀÖÀ½.                                                          >> %COMPUTERNAME%-w.log
@@ -3421,9 +3421,9 @@ date /t                                                                         
 time /t                                                                                    >> %COMPUTERNAME%-test.log
 echo.
 echo.
-type %JOYSEC%\result.log
-for /f "tokens=3 delims= " %%a in ('find /c "@" %JOYSEC%\not-apply.log') do set na=%%a
-for /f "tokens=3 delims= " %%a in ('find /c "@" %JOYSEC%\result.log') do set bad=%%a
+type C:\JOYSEC\result.log
+for /f "tokens=3 delims= " %%a in ('find /c "@" C:\JOYSEC\not-apply.log') do set na=%%a
+for /f "tokens=3 delims= " %%a in ('find /c "@" C:\JOYSEC\result.log') do set bad=%%a
 set /a sum=30-%na%
 set /a good=%sum%-%bad%
 set /a good=%good%*100
@@ -3448,9 +3448,9 @@ echo ###########################################################################
 @echo off
 echo.                                                                                      >> %COMPUTERNAME%-test.log
 echo.                                                                                      >> %COMPUTERNAME%-test.log
-type %JOYSEC%\result.log                                                                   > %COMPUTERNAME%.log
+type C:\JOYSEC\result.log                                                                   > %COMPUTERNAME%.log
 echo.                                                                                   
-type %JOYSEC%\not-apply.log                                                               >> %COMPUTERNAME%.log
+type C:\JOYSEC\not-apply.log                                                               >> %COMPUTERNAME%.log
 echo.
 ::type %COMPUTERNAME%-list.log                                                               >> %COMPUTERNAME%.log
 echo.
@@ -3514,142 +3514,142 @@ goto filedel
 ::IF NOT ERRORLEVEL 1 type %COMPUTERNAME%.log > %COMPUTERNAME%_%date1%_%WinVer%-%score%%percent%.log
 ::IF ERRORLEVEL 1 type %COMPUTERNAME%.log > %COMPUTERNAME%_2015-XX-XX_%WinVer%-%score%%percent%.log
 
-del %JOYSEC%\%COMPUTERNAME%.log 2>nul 
-del %JOYSEC%\%COMPUTERNAME%-1-1.log
-del %JOYSEC%\%COMPUTERNAME%-1-2.log
-del %JOYSEC%\%COMPUTERNAME%-1-3.log
-::del %JOYSEC%\%COMPUTERNAME%-1-4.log
-::del %JOYSEC%\%COMPUTERNAME%-2-1.log
-del %JOYSEC%\%COMPUTERNAME%-2-2.log
-del %JOYSEC%\%COMPUTERNAME%-2-3.log
-del %JOYSEC%\%COMPUTERNAME%-2-4.log
-del %JOYSEC%\%COMPUTERNAME%-3-1.log
-del %JOYSEC%\%COMPUTERNAME%-3-2.log
-del %JOYSEC%\%COMPUTERNAME%-4-1.log
-del %JOYSEC%\%COMPUTERNAME%-4-2.log
-del %JOYSEC%\%COMPUTERNAME%-4-3.log
-del %JOYSEC%\%COMPUTERNAME%-5-1.log
-del %JOYSEC%\%COMPUTERNAME%-5-2.log           
-del %JOYSEC%\%COMPUTERNAME%-6-1.log
-del %JOYSEC%\%COMPUTERNAME%-6-2.log
-del %JOYSEC%\%COMPUTERNAME%-6-3.log
-del %JOYSEC%\%COMPUTERNAME%-6-4.log
-del %JOYSEC%\%COMPUTERNAME%-6-5.log
-del %JOYSEC%\%COMPUTERNAME%-6-6.log
-del %JOYSEC%\%COMPUTERNAME%-6-7.log
-del %JOYSEC%\%COMPUTERNAME%-6-8.log
-del %JOYSEC%\%COMPUTERNAME%-6-9.log
-del %JOYSEC%\%COMPUTERNAME%-7-1.log
-del %JOYSEC%\%COMPUTERNAME%-7-2.log
-::del %JOYSEC%\%COMPUTERNAME%-8-1.log
-del %JOYSEC%\%COMPUTERNAME%-8-2.log
-del %JOYSEC%\%COMPUTERNAME%-8-3.log
-del %JOYSEC%\%COMPUTERNAME%-8-4.log
+del C:\JOYSEC\%COMPUTERNAME%.log 2>nul 
+del C:\JOYSEC\%COMPUTERNAME%-1-1.log
+del C:\JOYSEC\%COMPUTERNAME%-1-2.log
+del C:\JOYSEC\%COMPUTERNAME%-1-3.log
+::del C:\JOYSEC\%COMPUTERNAME%-1-4.log
+::del C:\JOYSEC\%COMPUTERNAME%-2-1.log
+del C:\JOYSEC\%COMPUTERNAME%-2-2.log
+del C:\JOYSEC\%COMPUTERNAME%-2-3.log
+del C:\JOYSEC\%COMPUTERNAME%-2-4.log
+del C:\JOYSEC\%COMPUTERNAME%-3-1.log
+del C:\JOYSEC\%COMPUTERNAME%-3-2.log
+del C:\JOYSEC\%COMPUTERNAME%-4-1.log
+del C:\JOYSEC\%COMPUTERNAME%-4-2.log
+del C:\JOYSEC\%COMPUTERNAME%-4-3.log
+del C:\JOYSEC\%COMPUTERNAME%-5-1.log
+del C:\JOYSEC\%COMPUTERNAME%-5-2.log           
+del C:\JOYSEC\%COMPUTERNAME%-6-1.log
+del C:\JOYSEC\%COMPUTERNAME%-6-2.log
+del C:\JOYSEC\%COMPUTERNAME%-6-3.log
+del C:\JOYSEC\%COMPUTERNAME%-6-4.log
+del C:\JOYSEC\%COMPUTERNAME%-6-5.log
+del C:\JOYSEC\%COMPUTERNAME%-6-6.log
+del C:\JOYSEC\%COMPUTERNAME%-6-7.log
+del C:\JOYSEC\%COMPUTERNAME%-6-8.log
+del C:\JOYSEC\%COMPUTERNAME%-6-9.log
+del C:\JOYSEC\%COMPUTERNAME%-7-1.log
+del C:\JOYSEC\%COMPUTERNAME%-7-2.log
+::del C:\JOYSEC\%COMPUTERNAME%-8-1.log
+del C:\JOYSEC\%COMPUTERNAME%-8-2.log
+del C:\JOYSEC\%COMPUTERNAME%-8-3.log
+del C:\JOYSEC\%COMPUTERNAME%-8-4.log
 
 
-del %JOYSEC%\%COMPUTERNAME%-list.log
-del %JOYSEC%\%COMPUTERNAME%-test.log
-del %JOYSEC%\result.log 2>nul
-del %JOYSEC%\not-apply.log 2>nul
+del C:\JOYSEC\%COMPUTERNAME%-list.log
+del C:\JOYSEC\%COMPUTERNAME%-test.log
+del C:\JOYSEC\result.log 2>nul
+del C:\JOYSEC\not-apply.log 2>nul
 
-del %JOYSEC%\Local_Security_Policy.txt
-del %JOYSEC%\1-1-userlist.log 2>nul
-::del %JOYSEC%\1-1-accounts.log
-::del %JOYSEC%\1-1-Activation.log
-::del %JOYSEC%\1-1-Yesnum.log
-del %JOYSEC%\1-1-result.log 2>nul
-del %JOYSEC%\1-2-PASSWORD_POL.log
-::del %JOYSEC%\1-4-IIS_STATUS.log
-del %JOYSEC%\1-6-telnet.log 2>nul
-del %JOYSEC%\2-1-admin-management.log 2>nul
-del %JOYSEC%\1-2-lock.log 2>nul
-del %JOYSEC%\1-3-PASSWORD_POL.log 2>nul
-del %JOYSEC%\2-1.log 2>nul
-del %JOYSEC%\2-2-user-access.log 2>nul
-del %JOYSEC%\2-2-result.log 2>nul
-del %JOYSEC%\2-3-harddirsk-netshare.log 2>nul
-del %JOYSEC%\2-3-harddisk-reg.log 2>nul 
-del %JOYSEC%\2-3-harddisk-reg1.log 2>nul
-del %JOYSEC%\2-3-netshare.log 2>nul 
-del %JOYSEC%\2-3-netsharelist.log 2>nul 
-del %JOYSEC%\3-1-remote.log 2>nul 
-del %JOYSEC%\3-1-terminal.log 2>nul
-del %JOYSEC%\5-2-hotfix.log 2>nul
-del %JOYSEC%\4-1-telnet.log 2>nul
-del %JOYSEC%\dnslist.log 2>nul
-del %JOYSEC%\4-3-snmp.log 2>nul
-del %JOYSEC%\5-1-sp.log 2>nul
-del %JOYSEC%\5-2-sp.log 2>nul
-del %JOYSEC%\6-1-Users_pum.log 2>nul 
-del %JOYSEC%\6-2-GUI.log 2>nul   
-del %JOYSEC%\6-2-REG.log 2>nul 
-del %JOYSEC%\6-3-event.log 2>nul   
-del %JOYSEC%\6-3-event-gpo.log 2>nul   
-del %JOYSEC%\6-3-event-gui.log 2>nul   
-del %JOYSEC%\6-4-logonmessage.log 2>nul
-del %JOYSEC%\6-5-lastlogon.log 2>nul
-del %JOYSEC%\6-7-securitylog.log 2>nul
-del %JOYSEC%\6-7-auditpol.log 2>nul
-del %JOYSEC%\7-1-vaccine.log 2>nul
-del %JOYSEC%\7-2-eupdate.log 2>nul
-del %JOYSEC%\8-3-remote-registry.log 2>nul
+del C:\JOYSEC\Local_Security_Policy.txt
+del C:\JOYSEC\1-1-userlist.log 2>nul
+::del C:\JOYSEC\1-1-accounts.log
+::del C:\JOYSEC\1-1-Activation.log
+::del C:\JOYSEC\1-1-Yesnum.log
+del C:\JOYSEC\1-1-result.log 2>nul
+del C:\JOYSEC\1-2-PASSWORD_POL.log
+::del C:\JOYSEC\1-4-IIS_STATUS.log
+del C:\JOYSEC\1-6-telnet.log 2>nul
+del C:\JOYSEC\2-1-admin-management.log 2>nul
+del C:\JOYSEC\1-2-lock.log 2>nul
+del C:\JOYSEC\1-3-PASSWORD_POL.log 2>nul
+del C:\JOYSEC\2-1.log 2>nul
+del C:\JOYSEC\2-2-user-access.log 2>nul
+del C:\JOYSEC\2-2-result.log 2>nul
+del C:\JOYSEC\2-3-harddirsk-netshare.log 2>nul
+del C:\JOYSEC\2-3-harddisk-reg.log 2>nul 
+del C:\JOYSEC\2-3-harddisk-reg1.log 2>nul
+del C:\JOYSEC\2-3-netshare.log 2>nul 
+del C:\JOYSEC\2-3-netsharelist.log 2>nul 
+del C:\JOYSEC\3-1-remote.log 2>nul 
+del C:\JOYSEC\3-1-terminal.log 2>nul
+del C:\JOYSEC\5-2-hotfix.log 2>nul
+del C:\JOYSEC\4-1-telnet.log 2>nul
+del C:\JOYSEC\dnslist.log 2>nul
+del C:\JOYSEC\4-3-snmp.log 2>nul
+del C:\JOYSEC\5-1-sp.log 2>nul
+del C:\JOYSEC\5-2-sp.log 2>nul
+del C:\JOYSEC\6-1-Users_pum.log 2>nul 
+del C:\JOYSEC\6-2-GUI.log 2>nul   
+del C:\JOYSEC\6-2-REG.log 2>nul 
+del C:\JOYSEC\6-3-event.log 2>nul   
+del C:\JOYSEC\6-3-event-gpo.log 2>nul   
+del C:\JOYSEC\6-3-event-gui.log 2>nul   
+del C:\JOYSEC\6-4-logonmessage.log 2>nul
+del C:\JOYSEC\6-5-lastlogon.log 2>nul
+del C:\JOYSEC\6-7-securitylog.log 2>nul
+del C:\JOYSEC\6-7-auditpol.log 2>nul
+del C:\JOYSEC\7-1-vaccine.log 2>nul
+del C:\JOYSEC\7-2-eupdate.log 2>nul
+del C:\JOYSEC\8-3-remote-registry.log 2>nul
 
-del %JOYSEC%\Hotfix_list.log 2>nul
-del %JOYSEC%\comtype-6-4.log 2>nul
-del %JOYSEC%\6-4-logonmessage-1.log 2>nul
-del %JOYSEC%\4-3-1-snmp.log 2>nul
-del %JOYSEC%\4-3-2-snmp.log 2>nul
+del C:\JOYSEC\Hotfix_list.log 2>nul
+del C:\JOYSEC\comtype-6-4.log 2>nul
+del C:\JOYSEC\6-4-logonmessage-1.log 2>nul
+del C:\JOYSEC\4-3-1-snmp.log 2>nul
+del C:\JOYSEC\4-3-2-snmp.log 2>nul
 
-del %JOYSEC%\1-3-pch.log 2>nul
-del %JOYSEC%\1-3-pch1.log 2>nul
-del %JOYSEC%\1-3-pch2.log 2>nul
-del %JOYSEC%\1-3-pch3.log 2>nul
-del %JOYSEC%\1-3-pch4.log 2>nul
-del %JOYSEC%\HotfixBaseday.log 2>nul
-del %JOYSEC%\HotFixL.log 2>nul
-del %JOYSEC%\pw2.log 2>nul
-del %JOYSEC%\pw3.log 2>nul
-del %JOYSEC%\pw4.log 2>nul
-del %JOYSEC%\V3.log 2>nul
-del %JOYSEC%\V3-1.log 2>nul
-del %JOYSEC%\pw4.log 2>nul
+del C:\JOYSEC\1-3-pch.log 2>nul
+del C:\JOYSEC\1-3-pch1.log 2>nul
+del C:\JOYSEC\1-3-pch2.log 2>nul
+del C:\JOYSEC\1-3-pch3.log 2>nul
+del C:\JOYSEC\1-3-pch4.log 2>nul
+del C:\JOYSEC\HotfixBaseday.log 2>nul
+del C:\JOYSEC\HotFixL.log 2>nul
+del C:\JOYSEC\pw2.log 2>nul
+del C:\JOYSEC\pw3.log 2>nul
+del C:\JOYSEC\pw4.log 2>nul
+del C:\JOYSEC\V3.log 2>nul
+del C:\JOYSEC\V3-1.log 2>nul
+del C:\JOYSEC\pw4.log 2>nul
 
-del %JOYSEC%\sep86.log 2>nul
-del %JOYSEC%\sep86-1.log 2>nul
-del %JOYSEC%\sep64.log 2>nul
-del %JOYSEC%\sep64-1.log 2>nul
-del %JOYSEC%\1-1-comp.log 2>nul
-del %JOYSEC%\1-1-explain.log 2>nul
-del %JOYSEC%\1-1-explain2.log 2>nul
+del C:\JOYSEC\sep86.log 2>nul
+del C:\JOYSEC\sep86-1.log 2>nul
+del C:\JOYSEC\sep64.log 2>nul
+del C:\JOYSEC\sep64-1.log 2>nul
+del C:\JOYSEC\1-1-comp.log 2>nul
+del C:\JOYSEC\1-1-explain.log 2>nul
+del C:\JOYSEC\1-1-explain2.log 2>nul
 
-del %JOYSEC%\HotFixCh.log 2>nul
-del %JOYSEC%\HotFixCh1.log 2>nul
-del %JOYSEC%\HotFixCh2.log 2>nul
-del %JOYSEC%\HotFixCh2.log 2>nul
-del %JOYSEC%\folderper.log 2>nul
-del %JOYSEC%\3-1-el.log 2>nul
-del %JOYSEC%\3-1-terminaldrive.log 2>nul
+del C:\JOYSEC\HotFixCh.log 2>nul
+del C:\JOYSEC\HotFixCh1.log 2>nul
+del C:\JOYSEC\HotFixCh2.log 2>nul
+del C:\JOYSEC\HotFixCh2.log 2>nul
+del C:\JOYSEC\folderper.log 2>nul
+del C:\JOYSEC\3-1-el.log 2>nul
+del C:\JOYSEC\3-1-terminaldrive.log 2>nul
 
-del %JOYSEC%\fname.txt 2>nul
-del %JOYSEC%\fpath.txt 2>nul
-del %JOYSEC%\ftp_list.txt 2>nul
-del %JOYSEC%\ftpid.txt 2>nul
-del %JOYSEC%\ftpname.txt 2>nul
-del %JOYSEC%\ftppath.txt 2>nul
-del %JOYSEC%\hname.txt 2>nul
-del %JOYSEC%\hpath.txt 2>nul
-del %JOYSEC%\http_list.txt 2>nul
-del %JOYSEC%\httpid.txt 2>nul
-del %JOYSEC%\httpname.txt 2>nul
-del %JOYSEC%\httppath.txt 2>nul
-del %JOYSEC%\rpath.txt 2>nul
-del %JOYSEC%\site_list.txt 2>nul
-del %JOYSEC%\iis-result.txt 2>nul
-del %JOYSEC%\iis-version.txt 2>nul
-del %JOYSEC%\website-list.txt 2>nul
-del %JOYSEC%\website-name.txt 2>nul
-del %JOYSEC%\website-physicalpath.txt 2>nul
-del %JOYSEC%\%COMPUTERNAME%-w.log 2>nul
+del C:\JOYSEC\fname.txt 2>nul
+del C:\JOYSEC\fpath.txt 2>nul
+del C:\JOYSEC\ftp_list.txt 2>nul
+del C:\JOYSEC\ftpid.txt 2>nul
+del C:\JOYSEC\ftpname.txt 2>nul
+del C:\JOYSEC\ftppath.txt 2>nul
+del C:\JOYSEC\hname.txt 2>nul
+del C:\JOYSEC\hpath.txt 2>nul
+del C:\JOYSEC\http_list.txt 2>nul
+del C:\JOYSEC\httpid.txt 2>nul
+del C:\JOYSEC\httpname.txt 2>nul
+del C:\JOYSEC\httppath.txt 2>nul
+del C:\JOYSEC\rpath.txt 2>nul
+del C:\JOYSEC\site_list.txt 2>nul
+del C:\JOYSEC\iis-result.txt 2>nul
+del C:\JOYSEC\iis-version.txt 2>nul
+del C:\JOYSEC\website-list.txt 2>nul
+del C:\JOYSEC\website-name.txt 2>nul
+del C:\JOYSEC\website-physicalpath.txt 2>nul
+del C:\JOYSEC\%COMPUTERNAME%-w.log 2>nul
 
 
 
