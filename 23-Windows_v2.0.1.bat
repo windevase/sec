@@ -15,24 +15,22 @@ REM :Q
 TITLE 2023 Windows Security Check v1.6.8
 @echo off
 
+
 echo.                                                                           
 @REM echo ####               보안 진단을 시작하겠습니까(Y/N)                   ####  
 echo.                                                                           
-
-:: set/p "cho=※ Windows 보안 진단을 시작하겠습니까? (Y/N) : "
-set cho=Y
-
+set/p "cho=※ Windows 보안 진단을 시작하겠습니까? (Y/N) : "
 if %cho%==Y goto start
 if %cho%==y goto start
-:: if %cho%==n goto end-2
-:: if %cho%==N goto end-2
-:: if %cho%==z goto end-3
+if %cho%==n goto end-2
+if %cho%==N goto end-2
+::if %cho%==z goto end-3
 
 :end-2
 pause
 EXIT
 
-:start
+:start 
 
 @REM 윈도우 버전 식별
 %script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProductName" > WinVer.log
