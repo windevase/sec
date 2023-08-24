@@ -12,7 +12,7 @@ FOR /F "tokens=1" %%a IN ('date /t') DO set day=%%a
 ::bcdedit > nul || (echo. & echo. & echo ※ 관리자 권한으로 실행해 주세요!! & echo. & echo. & echo. & pause & exit)
 
 REM :Q
-TITLE 2023 Windows Security Check v1.6.8
+TITLE 2023 Windows Security Check
 @echo off
 
 
@@ -31,6 +31,8 @@ pause
 EXIT
 
 :start 
+
+FOR /F "TOKENS=2* DELIMS=:" %%A IN ('IPCONFIG ^| FIND "IPv4"') DO FOR %%B IN (%%A) DO SET IPADDR=%%B
 
 @REM 윈도우 버전 식별
 %script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProductName" > WinVer.log
@@ -56,15 +58,13 @@ IF NOT ERRORLEVEL 1 set WinVer=Win2022
 type WinVer.log | findstr "Windows server 2003"	> nul
 IF NOT ERRORLEVEL 1 goto windows2003
 
-del %JOYSEC%\WinVer.log	2>nul
+::del %JOYSEC%\WinVer.log	2>nul
 
 bcdedit > nul || (echo. & echo. & echo ※ 관리자 권한으로 실행해 주세요!! & echo. & echo. & echo. & pause & exit)
 
-
-
 :windows2003
 
-del %JOYSEC%\WinVer.log	2>nul
+::del %JOYSEC%\WinVer.log	2>nul
 ::for /F "tokens=2 delims= " %%a in ('%script%\reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\CurrentVersion"') do (
 ::	set WinBuild1=%%a
 ::)
@@ -96,12 +96,12 @@ echo    진단항목별로 구체적인 진단 기준과 조치방법은 '보안가이드라인' 문서를 참�
 echo ※ 특이한 설정이나 정의되어 있지 않은 패턴에 대해서는 오탐이 있을 수 있으며,                   >> result.log
 echo    정확한 진단을 위해서는 실제 설정 현황과 보안가이드라인 문서를 바탕으로 판단하시기 바랍니다. >> result.log
 echo ##################################################################################### >> result.log
-echo  Script File    : 23-Windows_v2.0.1.bat                                                >> result.log
+echo  Script File    : 23-Windows_v2.0.2.bat                                                >> result.log
 echo  OS Version     : %WinVer%                                        					 >> result.log
 echo  Launching Time : %DATE% %TIME%                                                       >> result.log
 echo  Hostname       : %COMPUTERNAME%                                                      >> result.log
-::echo  IP address     :                                                                     >> result.log
-ipconfig | find "IPv4"                                                                     >> result.log
+echo  IP address     : %IPADDR%                                                            >> result.log
+::ipconfig | find "IPv4"                                                                     >> result.log
 echo ##################################################################################### >> result.log
 wmic os get name | findstr Microsoft > OSVersion
 for /f "tokens=1 delims=|" %%a in ('type OSVersion') Do set OSVersion=%%a
@@ -1123,6 +1123,10 @@ echo ■ 현황                                                                    
 echo.                                                                                      >> %COMPUTERNAME%-5-1.log
 echo 사용중인 OS는 %WinVer% 입니다.                                                        >> %COMPUTERNAME%-5-1.log
 echo.                                                                                      >> %COMPUTERNAME%-5-1.log
+
+type WinVer.log | findstr 2008	> nul
+IF ERRORLEVEL 1 GOTO 5-1-yes-sp
+
 %script%\psinfo | find "pack"                                                              >> 5-1-sp.log
 %script%\psinfo | find "Kernel build number"                                               >> 5-2-sp.log
 type 5-1-sp.log                           													>> %COMPUTERNAME%-5-1.log
@@ -3499,11 +3503,13 @@ IF ERRORLEVEL 1 GOTO winFile
 IF NOT ERRORLEVEL 1 GOTO iisFile
 
 :iisFile
-type %COMPUTERNAME%.log > %COMPUTERNAME%_%date%_%WinVer%-IIS-%score%%percent%.log
+::type %COMPUTERNAME%.log > %COMPUTERNAME%_%date%_%WinVer%-IIS-%score%%percent%.log
+type %COMPUTERNAME%.log > %COMPUTERNAME%_%IPADDR%_%date%_%WinVer%-IIS-%score%%percent%.log
 goto filedel
 
 :winFile
-type %COMPUTERNAME%.log > %COMPUTERNAME%_%date%_%WinVer%-%score%%percent%.log
+::type %COMPUTERNAME%.log > %COMPUTERNAME%_%date%_%WinVer%-%score%%percent%.log
+type %COMPUTERNAME%.log > %COMPUTERNAME%_%IPADDR%_%date%_%WinVer%-%score%%percent%.log
 goto filedel
 
 
@@ -3648,6 +3654,7 @@ del %JOYSEC%\website-list.txt 2>nul
 del %JOYSEC%\website-name.txt 2>nul
 del %JOYSEC%\website-physicalpath.txt 2>nul
 del %JOYSEC%\%COMPUTERNAME%-w.log 2>nul
+del %JOYSEC%\WinVer.log	2>nul
 
 
 
